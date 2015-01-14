@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="Basket">
+	
+	<resultMap id="BasketResult" type="basket">
+		<result property="memberNo" column="MNO" />
+		<result property="productNo" column="PNO" />
+		<result property="quantity" column="QUANTITY" />
+	</resultMap>
+
+	<select id="selectAllBasket" resultMap="BasketResult">
+		select * from BASKET
+	</select>
+	
+	<select id="selectBasketByNo" parameterType="int" resultMap="BasketResult">
+		select MNO, PNO, QUANTITY
+		from BASKET
+		where MNO = #{memberNo}
+	</select>
+
+	<insert id="insertBasket" parameterType="basket">
+		insert into BASKET(MNO, PNO, QUANTITY)
+		values (#{memberNo}, #{productNo}, #{quantity})
+	</insert>
+	
+	<update id="updateBasket" parameterType="basket">
+		update BASKET
+		set QUANTITY = #{quantity}
+		where MNO = #{memberNo} and PNO = #{productNo}
+	</update>
+	
+	<delete id="deleteBasketByNo" parameterType="basket">
+		delete
+		from BASKET
+		where MNO = #{memberNo} and PNO = #{productNo}
+	</delete>
+
+</mapper>
+  

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+ 
+<mapper namespace="product">
+	
+	<resultMap id="productClass" type="product">
+		<result property="pno" column ="pno" />
+		<result property="pname" column ="pname"/>
+		<result property="price" column ="price"/>
+		<result property="quantity" column ="quantity"/>
+		<result property="cno" column ="cno"/>
+		<result property="releaseDate" column ="releasedate"/>
+		<association property="c" javaType="category">
+			<result property="category" column="cate"/>
+		</association>
+	</resultMap>
+	
+	<select id="selectAllProducts" resultMap="productClass">
+		select * 
+		from product p, category c 
+		where p.cno= c.cno
+	</select>		
+	
+	<select id="selectOneProduct" parameterType="int" resultMap="productClass">
+		select * 
+		from product p, category c 
+		where p.cno= c.cno and pno = #{pno}
+	</select>
+	
+	<insert id="insertProduct" parameterType="product">
+		insert 
+		into product
+		values(#{pno}, #{pname}, #{price}, #{quantity}, #{cno}, sysdate)
+	</insert>
+	
+	<!-- update 어떤걸? -->
+ 	 <update id="updateProduct" parameterType="product" >
+		update product
+			<if test="pname != null"> 
+					set pname = #{pname} 
+			</if>
+			<if test="price != 0">
+					set price = #{price} 
+			</if>
+			<if test="quantity != 0">
+					set quantity = #{quantity} 
+			</if>
+			<if test="cno != 0"> 
+					set cno = #{cno} 
+			</if>
+		where pno = #{pno}
+	</update>
+	
+	
+<!-- 	
+	<update id="updateTest" parameterType="product" >
+		update product
+			
+					set pname = #{pname} 
+		where pno = #{pno}
+	</update>
+	 -->
+	
+	
+	<delete id="deleteProduct" parameterType="int">
+		delete 
+		from product
+		where pno = #{pno}
+	</delete>
+
+	<!-- step02 -->
+	<!--  <resultMap id="joinTest" type="people">
+		<result property="id" column ="id" />
+		<result property="name" column ="name"/>
+		
+		job변수에 값 대입해야하는 상황
+			단 job 은PeopleJob타입 따라사ㅓ PeopleJob의 job변수에만 값 대입 필요
+			왜? id값은people과peoplejob이 동일하기 떄문에 job만 고려해먄 되는 부분
+			
+			이 tag를 보유한 people클래스의 멤버인job = PeopleJob
+		<association property="job" javaType="peopleJob">
+			이 tag를 보유한 association tag는 PeopleJob을 의미
+			즉 PeopleJob객체의 result property는 멤버 변수를 의미 = job
+			<result property="job" column="job"/>
+		</association>
+	</resultMap>
+	join select
+	<select id="a" parameterType="string" resultMap="joinTest">
+		select p.id, name
+		from people p , people_job j
+		 where p.id = #{id} and p.id = j.id
+	</select>	
+ -->
+
+
+
+
+	<!-- step01 -->
+	<!-- <resultMap id="joinTest" type="people">
+		<result property="id" column ="id" />
+		<result property="name" column ="name"/>
+		<association property="job" column="id" select="b"/>
+		People의 job에 매핑해야하는 job을b라는id의 select tag 실행
+	</resultMap>
+	
+	<select id="a" parameterType="string" resultMap="joinTest">
+		select * from people where id=#{id}
+	</select>		
+	
+	<select id="b" parameterType="string" resultType="string">
+		select job from people_job where id=#{id}
+	</select>  -->
+		
+</mapper>
